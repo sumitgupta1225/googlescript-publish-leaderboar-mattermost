@@ -1,0 +1,45 @@
+function postLeaderboard() {
+var ss = SpreadsheetApp.getActiveSpreadsheet();
+var sheet = ss.getSheetByName('Leader Board');
+var range = sheet.getRange("I6:K15");
+var todayDate = getDate();
+var topscorer = range.getCell(1, 2).getValue();
+var result = '##### :trophy: LeaderBoard as on: ' + todayDate + ' :trophy: \n' +
+'##### :star: Congratulations ' + topscorer + ' for being on the Top !! :star: \n\n' +
+'| Rank  | Name              | Points      |\n' +
+'|:-----:|:-----------------:|:-----------:|\n';
+  for(var i=1;i<=10;i++)
+  {
+    result += '|';
+    for(var j=1;j<=3;j++){      
+    var cell = range.getCell(i, j);
+      result += cell.getValue() + '      |';
+    }
+    result += '\n';
+  }
+
+var url = '{put your mattermost incoming webhook endpoint here}' 
+
+var payload = {
+  "username":"{Put a name here}",
+  "icon_url":"{Put the icon public url here}",  
+  "text": result
+};
+ var options = {
+"method": "POST",
+"contentType": "application/json",
+"payload": JSON.stringify(payload)
+};
+  
+var response = UrlFetchApp.fetch(url, options); 
+//Logger.log(result);
+}
+
+function getDate() { 
+  var today = new Date(); 
+            var date = today.toJSON().slice(0, 10); 
+            var nDate = date.slice(8, 10) + '/'  
+                       + date.slice(5, 7) + '/'  
+                       + date.slice(0, 4);            
+  return nDate; 
+        }
